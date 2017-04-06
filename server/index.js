@@ -4,8 +4,14 @@ import path from 'path'
 
 import webpack from 'webpack'
 import webpackMiddleware from 'webpack-dev-middleware'
-import webpackConfig from '../webpack.config.dev'
 import webpackHotMiddleware from 'webpack-hot-middleware'
+
+import webpackConfig from '../webpack.config.dev'
+import mongokeeper  from './models/mongokeeper'
+import apiRouter from './routes/apiRouter'
+import config from './config'
+
+
 
 let app = express();
 
@@ -20,12 +26,18 @@ app.use(webpackMiddleware(compiler,{
 
 app.use(webpackHotMiddleware(compiler))
 
+app.use(express.static(path.join(__dirname, '../client')));
+
+process.env.MONGO_DB_STR = config.devDbUrl;//config.dbConfig;
+mongokeeper.config(config.dbConfig);
+
+app.use('/api',apiRouter);
 
 app.get('/*' ,(req, res) => {
     res.sendfile(path.join(__dirname, './index.html'))
 })
 
 
-app.listen(3000, () => console.log('Running on localhost:3000'))
+app.listen(config.httpPort, () => console.log("You can debug your app with http://" + config.localhost + ':' +config.httpPort ))
 
 

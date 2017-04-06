@@ -26,6 +26,13 @@ export default{
                     path.join(__dirname, 'client')
                 ] ,
                 loaders: [  'babel-loader' ]
+            },
+            {
+                test: /\.css$/,
+                include: [
+                    path.join(__dirname, 'client/css')
+                ] ,
+                loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
             }
         ]
     },
