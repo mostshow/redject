@@ -1,6 +1,7 @@
 
 import bluebird from 'bluebird'
 import _ from 'lodash'
+import moment from 'moment'
 
 import LogModel from '../models/log_model'
 import tools from '../common/tools'
@@ -9,32 +10,52 @@ import config from '../config'
 export default {
 
     log(req, res, next) {
-        let resolution = tools.getParam(req,'resolution');
-        let message = tools.getParam(req,'message');
-        let colNum = tools.getParam(req,'colNum');
-        let rowNum = tools.getParam(req,'rowNum');
-        let sourceFile = tools.getParam(req,'sourceFile');
-        let from = tools.getParam(req,'from');
+
+        let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        let userAgent = tools.getPlatform(req.headers['user-agent'] || '') + ':----' + req.headers['user-agent'];
+        let level = req.query.level || 'NONE';
+
+        req.query._t = moment().format('YYYY-MM-DD HH:mm')
+        req.query.userAgent = userAgent
+        req.query.ip = ip
+
+        tools.logger(req.query,level)
+        tools.sendResult(res,-1);
+
+        if(req.query.type !== 'SCRIPTERROR'){
+            return;
+        }
+        let msg = req.query.msg || '';
+        let col = req.query.col || -1;
+        let row = req.query.row || -1;
+        let sourceFile = req.query.sourceFile || '';
+        let referer = req.query.referer || '' ;
+        let resolution = req.query.resolution || '';
+        let from = req.query.from || '';
+        let type = req.query.type || 'NONE'
 
         let _log = {
-            ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-            userAgent: tools.getPlatform(req.headers['user-agent'] || '') + ':----' + req.headers['user-agent'],
-            resolution: resolution || '',
-            message: htmlEncode(message) || '',
-            colNum: htmlEncode(colNum) || -1,
-            rowNum: htmlEncode(rowNum) || -1,
-            sourceFile: htmlEncode(sourceFile) || '',
-            referUrl: req.headers['referer'] || req.body.referer || '',
-            from: htmlEncode(from) || ''
+            ip: ip,
+            userAgent:userAgent,
+            msg: msg ,
+            col: tools.htmlEncode(col) ,
+            row: tools.htmlEncode(row) ,
+            sourceFile: sourceFile,
+            level: level,
+            referer: referer,
+            resolution: resolution ,
+            from: from,
+            type: type,
+
         }
 
-        var log = new Log(_log);
+        var log = new LogModel(_log);
 
         log.save(function (error) {
-            if (err) {
-                tools.sendResult(res,-1);
+            if (error) {
+                // tools.sendResult(res,-1);
             }
-            tools.sendResult(res,0);
+            // tools.sendResult(res,0);
         });
     },
     getLog(req, res, next) {

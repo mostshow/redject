@@ -5,14 +5,19 @@ import _ from 'lodash'
 import mailer from 'nodemailer'
 import smtpTransport from 'nodemailer-smtp-transport'
 import util from 'util'
+import fs from 'fs'
 
 import config from '../config'
 import WebStatus from './webStatus'
 
 const transport = mailer.createTransport(smtpTransport(config.mail_opts));
+const consolePrint = config.debug ;
 
 moment.locale('zh-cn');
 
+if (!fs.existsSync("./log")) {
+    fs.mkdirSync("./log");
+}
 export default {
 
     getParam (req, fieldName){
@@ -32,6 +37,25 @@ export default {
             WebStatus.setResult(data)
         }
         res.send(WebStatus.toJSON())
+    },
+
+    logger:function(infos,level = 'info') {
+        let filePrint = level !== 'debug';
+        let date = moment(date);
+        let prefix = '**';
+        let logStr = ''
+
+        if(_.isObject(infos)){
+            logStr = JSON.stringify(infos);
+            console.log(logStr)
+        }else{
+            logStr = infos
+        }
+        let line =  util.format('[%s]:%s%s',level,prefix,logStr,);
+        if (filePrint)
+            fs.appendFile('./log/log-' + date.format('YYYY-MM-DD')+ '.log', line + "\n");
+        if (consolePrint)
+            console.log(line);
     },
 
     sendMail (data) {
@@ -97,7 +121,7 @@ export default {
                 platform = '小米手机'
             } else if (/huawei|honor/ig.test(ua)) { //huawei的是华为，honor的是华为荣耀
                 platform = '华为手机'
-            } else if('/vivo/ig'.test(ua)) {
+            } else if(/vivo/ig.test(ua)) {
                 platform = 'vivo手机'
             } else {
                 platform = 'android';
