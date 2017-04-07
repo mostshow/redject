@@ -6,7 +6,7 @@ export default () => {
         <nav className="navbar navbar-default">
             <div className="container-fluid">
                 <div className="navbar-header">
-                    <a className="navbar-brand" href="#">前端错误日志管理系统</a>
+                    <a className="navbar-brand" href="#">Log</a>
                 </div>
                 <div className="collapse navbar-collapse">
                     <ul className="nav navbar-nav navbar-right">
