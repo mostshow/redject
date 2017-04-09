@@ -49,7 +49,7 @@ export default {
 
         }
 
-        var log = new LogModel(_log);
+        let log = new LogModel(_log);
 
         log.save(function (error) {
             if (error) {
@@ -65,6 +65,35 @@ export default {
         }).catch( err =>{
             console.log(err)
         } )
+    },
+    getSourceMap(){
+
+        let row = +req.query.row || -1;
+        let col = +req.query.col || -1;
+        let sourceMapSrc = (req.query.sourceMapSrc && decodeURIComponent(req.query.sourceMapSrc)) || '';
+
+        if (row > 0 && col > 0 && sourceMapSrc) {
+            request(sourceMapSrc, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    try {
+                        JSON.parse(body);
+                        let consumer = new sourceMap.SourceMapConsumer(body);
+                        let result = consumer.originalPositionFor({ line: row, column: col });
+
+                        tools.sendResult(res,0,result);
+                    } catch (e) {
+
+                        tools.sendResult(res,-10);
+                    }
+                } else {
+                    //response.statusCode
+                    //response.statusMessage
+                    tools.sendResult(res,-11);
+                }
+            });
+        } else {
+            tools.sendResult(res,-1);
+        }
     }
 }
 

@@ -10,6 +10,7 @@ export default{
     ],
     output: {
         path: '/',
+        // path: path.join(__dirname, '/javascripts/'),
         publicPath: '/',
         filename: 'bundle.js'
     },
