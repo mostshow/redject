@@ -2,6 +2,8 @@
 import bluebird from 'bluebird'
 import _ from 'lodash'
 import moment from 'moment'
+import request from 'request'
+import sourceMap from 'source-map'
 
 import LogModel from '../models/log_model'
 import tools from '../common/tools'
@@ -66,7 +68,7 @@ export default {
             console.log(err)
         } )
     },
-    getSourceMap(){
+    getSourceMap(req, res){
 
         let row = +req.query.row || -1;
         let col = +req.query.col || -1;
