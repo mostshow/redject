@@ -1,23 +1,35 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import moment from 'moment'
+import ReactPaginate from 'react-paginate'
 
 import BugView from './BugView'
 import BugFilter from './BugFilter'
 
-import { parseSourceMap } from '../actions/logActions'
+import { parseSourceMap, logRequest } from '../actions/logActions'
 
 class BugList extends React.Component {
 
     constructor(props) {
         super(props);
         this.handleParseSourceMap = this.handleParseSourceMap.bind(this);
+        this.handlePageClick = this.handlePageClick.bind(this);
+        this.search = this.search.bind(this);
         this.state = {
+            pageSize: 1,
+			startDate: moment().subtract(29, 'days').format('YYYY-MM-DD'),
+            endDate: moment().format('YYYY-MM-DD'),
+            keyword:'',
+            selectValue:'',
+            curPage:0
         }
 
     }
 
-
+    componentDidMount() {
+        this.props.logRequest(this.state)
+    }
     handleParseSourceMap(logData){
         this.props.parseSourceMap({
             row:logData.row,
@@ -40,14 +52,39 @@ class BugList extends React.Component {
             console.error(err);
         })
     }
+    componentDidUpdate(){
+    }
+    handlePageClick(obj){
+        let state = {
+            curPage:obj.selected
+        }
+        this.setState(state,() =>{
+            this.props.logRequest(this.state)
+        })
+    }
+
+    search(param){
+        let state = {
+			startDate: param.startDate.format('YYYY-MM-DD') || '',
+            endDate: param.endDate.format('YYYY-MM-DD') || '',
+            keyword:param.keyword || '',
+            selectValue:param.selectValue || '',
+            curPage:0
+        }
+        this.setState(state, () =>{
+            this.props.logRequest(this.state)
+        })
+    }
 
     render(){
-        const Log = this.props.logList.map(log =>
-            <BugView  key={log._id} log={log} handleParseSourceMap = {this.handleParseSourceMap}  />
+        const Log = this.props.logList.data.map(log =>
+        <BugView  key={log._id} log={log} handleParseSourceMap = {this.handleParseSourceMap}  />
         )
+        const pageCount = Math.ceil(this.props.logList.total/this.state.pageSize);
         return (
         <div>
-            <BugFilter />
+            <BugFilter search={this.search}/>
+
             <table className="table table-hover">
                 <thead>
                     <tr>
@@ -66,10 +103,22 @@ class BugList extends React.Component {
                     {Log}
                 </tbody>
             </table>
+            <ReactPaginate previousLabel={"previous"}
+                nextLabel={"next"}
+                breakLabel={<a href="">...</a>}
+                breakClassName={"break-me"}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={this.handlePageClick}
+                forcePage = {this.state.curPage}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"} />
         </div>
+        )
 
-    )
-}
+    }
 }
 
 function mapStateToProps(state) {
@@ -78,4 +127,8 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps,{parseSourceMap})(BugList)
+BugList.propTypes = {
+    logRequest: React.PropTypes.func.isRequired
+}
+
+export default connect(mapStateToProps,{parseSourceMap, logRequest})(BugList)

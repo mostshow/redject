@@ -61,12 +61,46 @@ export default {
         });
     },
     getLog(req, res, next) {
-        LogModel.find({}).then(reData =>{
-            console.log(reData)
-            tools.sendResult(res,0,reData);
-        }).catch( err =>{
-            console.log(err)
-        } )
+
+            let pageSize = +req.query.pageSize || 10;
+            let currentPage = +req.query.curPage || 1;
+            let from = +new Date(req.query.from);
+            let to = +new Date(req.query.to);
+            let keyword = req.query.keyword;
+            let selectValue = req.query.selectValue;
+            var sort = {'createAt': -1};
+
+            var condition = {};
+            var fields = {'__v': 0};
+
+            var skipnum = (currentPage - 1) * pageSize;
+
+            if (from && to) {
+                if (from <= to) {
+                    condition['createAt'] = {'$gte': from, '$lte': to};
+                } else {
+                    tools.sendResult(res,-1,{data: [], total: 0});
+                    return ;
+                }
+            }
+
+            if (keyword) {
+                condition[selectValue] = new RegExp(keyword.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1'), 'i');
+            }
+
+            LogModel.find(condition, fields).skip(skipnum).limit(pageSize).sort(sort).exec( (err, data) => {
+                if (err) {
+                    tools.sendResult(res,-1);
+                } else {
+                    LogModel.count(condition).exec( (error, result) => {
+                        if (error) {
+                            tools.sendResult(res,-1);
+                        } else {
+                            tools.sendResult(res,0,{data: data, total: result});
+                        }
+                    });
+                }
+            });
     },
     getSourceMap(req, res){
 

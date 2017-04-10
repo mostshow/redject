@@ -10,7 +10,6 @@ class LogView extends React.Component {
     const { col, createAt, ip, level, msg, referer, resolution, row, sourceFile, type, userAgent } = this.props.log;
     const handleParseSourceMap = this.props.handleParseSourceMap;
     const logData = this.props.log;
-
     return (
         <tr>
             <td className="col-md-1">{moment(+createAt).format('YYYY-MM-DD HH:mm')}</td>
