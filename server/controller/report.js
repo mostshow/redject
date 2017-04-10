@@ -70,12 +70,12 @@ export default {
     },
     getSourceMap(req, res){
 
-        let row = +req.query.row || -1;
-        let col = +req.query.col || -1;
-        let sourceMapSrc = (req.query.sourceMapSrc && decodeURIComponent(req.query.sourceMapSrc)) || '';
+        let row = +req.query.row || 1;
+        let col = +req.query.col || 10;
+        let sourceMapSrc = (req.query.sourceMapSrc && decodeURIComponent(req.query.sourceMapSrc)) || 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.map';
 
         if (row > 0 && col > 0 && sourceMapSrc) {
-            request(sourceMapSrc, function (error, response, body) {
+            request(sourceMapSrc,  (error, response, body) => {
                 if (!error && response.statusCode == 200) {
                     try {
                         JSON.parse(body);
