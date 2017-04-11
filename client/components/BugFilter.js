@@ -39,9 +39,15 @@ class BugFilter extends React.Component {
 	}
 
     updateValue(newValue){
-		this.setState({
-			selectValue: newValue.value
-		});
+        if(newValue){
+            this.setState({
+                selectValue: newValue.value
+            });
+        }else{
+            this.setState({
+                selectValue: ''
+            });
+        }
     }
     render(){
         let start = this.state.startDate.format('YYYY-MM-DD');
@@ -50,6 +56,7 @@ class BugFilter extends React.Component {
 
         let options = [
             { value: 'ip', label: 'IP' },
+            { value: 'env', label: 'Env' },
             { value: 'level', label: 'Level' },
             { value: 'msg', label: 'Message' },
             { value: 'referer', label: 'Referer' },

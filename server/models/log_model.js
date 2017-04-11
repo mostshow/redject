@@ -17,6 +17,7 @@ var logSchema = new Schema({
 	msg: String,
     level: String,
 	col: Number,
+	env: String,
 	row: Number,
 	sourceFile: String, // 错误文件url
 	referer: String,

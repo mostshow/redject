@@ -88,15 +88,16 @@ class BugList extends React.Component {
             <table className="table table-hover">
                 <thead>
                     <tr>
-                        <th>Time</th>
-                        <th>Level</th>
-                        <th>Type</th>
-                        <th>IP</th>
-                        <th>Resolution</th>
-                        <th>Referer</th>
-                        <th>Source-File</th>
-                        <th>Message</th>
-                        <th>UA</th>
+                        <th className="col-md-1">Time</th>
+                        <th className="col-md-1">Env</th>
+                        <th className="col-md-1">Level</th>
+                        <th className="col-md-1">Type</th>
+                        <th className="col-md-1">IP</th>
+                        <th className="col-md-1">Resolution</th>
+                        <th className="col-md-1">Referer</th>
+                        <th className="col-md-2">Source-File</th>
+                        <th className="col-md-2">Message</th>
+                        <th className="col-md-1">UA</th>
                     </tr>
                 </thead>
                 <tbody>

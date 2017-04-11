@@ -35,9 +35,11 @@ export default {
         let resolution = req.query.resolution || '';
         let from = req.query.from || '';
         let type = req.query.type || 'NONE'
+        let env = req.query.env
 
         let _log = {
             ip: ip,
+            env: env,
             userAgent:userAgent,
             msg: msg ,
             col: tools.htmlEncode(col) ,
@@ -63,9 +65,9 @@ export default {
     getLog(req, res, next) {
 
             let pageSize = +req.query.pageSize || 10;
-            let currentPage = +req.query.curPage || 1;
-            let from = +new Date(req.query.from);
-            let to = +new Date(req.query.to);
+            let currentPage = +req.query.curPage ;
+            let from = new Date(req.query.startDate).getTime();
+            let to = new Date(req.query.endDate).getTime();
             let keyword = req.query.keyword;
             let selectValue = req.query.selectValue;
             var sort = {'createAt': -1};
@@ -73,8 +75,10 @@ export default {
             var condition = {};
             var fields = {'__v': 0};
 
-            var skipnum = (currentPage - 1) * pageSize;
+            var skipnum = currentPage * pageSize;
 
+            console.log(from)
+            console.log(to)
             if (from && to) {
                 if (from <= to) {
                     condition['createAt'] = {'$gte': from, '$lte': to};
@@ -84,10 +88,9 @@ export default {
                 }
             }
 
-            if (keyword) {
+            if (keyword&&selectValue) {
                 condition[selectValue] = new RegExp(keyword.replace(/([.?*+^$[\]\\(){}|-])/g, '\\$1'), 'i');
             }
-
             LogModel.find(condition, fields).skip(skipnum).limit(pageSize).sort(sort).exec( (err, data) => {
                 if (err) {
                     tools.sendResult(res,-1);

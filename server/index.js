@@ -6,25 +6,31 @@ import webpack from 'webpack'
 import webpackMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 
-import webpackConfig from '../webpack.config.dev'
+import webpackDevConfig from '../webpack.config.dev'
+import webpackConfig from '../webpack.config.babel'
+
 import mongokeeper  from './models/mongokeeper'
 import apiRouter from './routes/apiRouter'
 import config from './config'
 
-
-
+console.log(process.env.NODE_ENV)
+let compiler = ''
 let app = express();
+if(process.env.NODE_ENV == 'development'){
+    compiler = webpack(webpackDevConfig)
+    app.use(webpackMiddleware(compiler,{
+        hot: true,
+        publicPath: webpackDevConfig.output.publicPath,
+        noInfo: false
 
-const compiler = webpack(webpackConfig)
+    }))
+    app.use(webpackHotMiddleware(compiler))
+}else{
 
-app.use(webpackMiddleware(compiler,{
-    hot: true,
-    publicPath: webpackConfig.output.publicPath,
-    noInfo: false
+    compiler = webpack(webpackConfig)
+    app.use(webpackMiddleware(compiler))
+}
 
-}))
-
-app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static(path.join(__dirname, '../client')));
 

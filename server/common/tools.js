@@ -51,7 +51,7 @@ export default {
         }else{
             logStr = infos
         }
-        let line =  util.format('[%s]:%s%s',level,prefix,logStr,);
+        let line =  util.format('[%s]:%s%s',level,prefix,logStr);
         if (filePrint)
             fs.appendFile('./log/log-' + date.format('YYYY-MM-DD')+ '.log', line + "\n");
         if (consolePrint)
