@@ -17,6 +17,7 @@ console.log(process.env.NODE_ENV)
 let compiler = ''
 let app = express();
 if(process.env.NODE_ENV == 'development'){
+    process.env.MONGO_DB_STR = config.devDbUrl;//config.dbConfig;
     compiler = webpack(webpackDevConfig)
     app.use(webpackMiddleware(compiler,{
         hot: true,
@@ -25,12 +26,7 @@ if(process.env.NODE_ENV == 'development'){
 
     }))
     app.use(webpackHotMiddleware(compiler))
-}else{
-
-    compiler = webpack(webpackConfig)
-    app.use(webpackMiddleware(compiler))
 }
-
 
 app.use(express.static(path.join(__dirname, '../client')));
 

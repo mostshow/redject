@@ -17,7 +17,7 @@ class BugList extends React.Component {
         this.handlePageClick = this.handlePageClick.bind(this);
         this.search = this.search.bind(this);
         this.state = {
-            pageSize: 1,
+            pageSize: 10,
 			startDate: moment().subtract(29, 'days').format('YYYY-MM-DD'),
             endDate: moment().format('YYYY-MM-DD'),
             keyword:'',

@@ -23,14 +23,13 @@ MongooseKeeper.prototype.config = function(conf) {
             poolSize: 5,
             auto_reconnect: true
         },
-        // user: conf.userid,
-        // pass: conf.password
+        user: conf.userid,
+        pass: conf.password
     };
     let connStr;
     if (process.env.MONGO_DB_STR) {
         connStr = process.env.MONGO_DB_STR;
     } else {
-        //'mongodb://adeploy_qgz:qgz#2017@10.16.15.101:27017/adeploy'
          connStr = 'mongodb://{{userid}}:{{password}}@{{host}}:{{port}}/{{database}}'.replace(/\{\{(.*?)\}\}/g,function(item,$1){
               return conf[$1]
          })
