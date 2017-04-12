@@ -25,7 +25,6 @@ var logSchema = new Schema({
 	from: String
 });
 
-logSchema.index({ username: 1 }, { unique: true });
 
 
 logSchema.pre('save', function(next) {

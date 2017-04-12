@@ -78,6 +78,7 @@
             this.config = {
                 url: 'http://10.16.8.5:3006/api/report/log',
                 sampling: 1,
+                env: 'pro',
                 ignore: [],
                 debug: true
             };
@@ -88,21 +89,25 @@
         },
 
         info : function(data){
+            if(typeof data != 'object') return;
             data.level = "INFO"
             this.send(data)
         },
 
         error : function(data){
+            if(typeof data != 'object') return;
             data.level = "ERROR"
             this.send(data)
         },
 
         warn: function(data){
+            if(typeof data != 'object') return;
             data.level = "WARN"
             this.send(data)
         },
 
         log: function(data){
+            if(typeof data != 'object') return;
             data.level = "LOG"
             this.send(data)
         },
@@ -111,7 +116,7 @@
 
             var ctx = this;
 
-            if(!data) return;
+            if(typeof data != 'object') return;
             if(this.clientLogSendCount > this.clientLogSendMax) return;
             if(this.config.debug) return;
 
@@ -146,9 +151,10 @@
         },
 
         fixParams : function(params) {
-
+            var ctx = this;
             var temp = {
                 referer : root.location.href,
+                env : ctx.config.env,
                 resolution : root.screen.width + '*' + root.screen.height,
                 from : root.document.referrer || 'NONE'
             }
@@ -181,8 +187,10 @@
 
         root.LogReporter = LogReporter;
     }
-
+    root.LogReporter = LogReporter;
 
 })();
+
+
 
 

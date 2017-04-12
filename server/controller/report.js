@@ -12,7 +12,6 @@ import config from '../config'
 export default {
 
     log(req, res, next) {
-
         let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         let userAgent = tools.getPlatform(req.headers['user-agent'] || '') + ':----' + req.headers['user-agent'];
         let level = req.query.level || 'NONE';
@@ -22,11 +21,7 @@ export default {
         req.query.ip = ip
 
         tools.logger(req.query,level)
-        tools.sendResult(res,-1);
 
-        if(req.query.type !== 'SCRIPTERROR'){
-            return;
-        }
         let msg = req.query.msg || '';
         let col = req.query.col || -1;
         let row = req.query.row || -1;
@@ -57,9 +52,10 @@ export default {
 
         log.save(function (error) {
             if (error) {
-                // tools.sendResult(res,-1);
+                console.log(error)
+               return  tools.sendResult(res,-1);
             }
-            // tools.sendResult(res,0);
+            tools.sendResult(res,0);
         });
     },
     getLog(req, res, next) {
@@ -77,8 +73,6 @@ export default {
 
             var skipnum = currentPage * pageSize;
 
-            console.log(from)
-            console.log(to)
             if (from && to) {
                 if (from <= to) {
                     condition['createAt'] = {'$gte': from, '$lte': to};

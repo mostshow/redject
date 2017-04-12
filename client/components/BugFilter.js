@@ -16,7 +16,7 @@ class BugFilter extends React.Component {
 
         this.state = {
 			startDate: moment().subtract(29, 'days'),
-            endDate: moment(),
+            endDate: moment().subtract(-1, 'days'),
             keyword:'',
             selectValue:''
         }

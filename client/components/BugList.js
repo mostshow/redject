@@ -19,7 +19,7 @@ class BugList extends React.Component {
         this.state = {
             pageSize: 10,
 			startDate: moment().subtract(29, 'days').format('YYYY-MM-DD'),
-            endDate: moment().format('YYYY-MM-DD'),
+            endDate: moment().subtract(-1, 'days').format('YYYY-MM-DD'),
             keyword:'',
             selectValue:'',
             curPage:0
@@ -95,8 +95,8 @@ class BugList extends React.Component {
                         <th className="col-md-1">IP</th>
                         <th className="col-md-1">Resolution</th>
                         <th className="col-md-1">Referer</th>
-                        <th className="col-md-2">Source-File</th>
-                        <th className="col-md-2">Message</th>
+                        <th className="col-md-1">Source-File</th>
+                        <th className="col-md-3">Message</th>
                         <th className="col-md-1">UA</th>
                     </tr>
                 </thead>

@@ -2,15 +2,12 @@
 'use strict'
 import moment from 'moment'
 import _ from 'lodash'
-import mailer from 'nodemailer'
-import smtpTransport from 'nodemailer-smtp-transport'
 import util from 'util'
 import fs from 'fs'
 
 import config from '../config'
 import WebStatus from './webStatus'
 
-const transport = mailer.createTransport(smtpTransport(config.mail_opts));
 const consolePrint = config.debug ;
 
 moment.locale('zh-cn');
@@ -47,7 +44,6 @@ export default {
 
         if(_.isObject(infos)){
             logStr = JSON.stringify(infos);
-            console.log(logStr)
         }else{
             logStr = infos
         }
@@ -58,31 +54,6 @@ export default {
             console.log(line);
     },
 
-    sendMail (data) {
-        let ctx = this;
-        transport.sendMail(data, function(err) {
-            if (err) {
-                ctx.logger(err,'error');
-            }
-        });
-    },
-
-    sendProjectMail (opt = {onlineLog:''}) {
-        var from = util.format('%s <%s>', config.name, config.mail_opts.auth.user);
-        var to = config.mailTo.join(',');
-        var subject = '前端错误';
-        var html = [
-            '<p> 日志：{{onlineLog}}</p>'
-        ].join(' ').replace(/{{(.*?)}}/g,function(item,$1){
-            return opt[$1]||'N/A'
-        })
-        this.sendMail({
-            from: from,
-            to: to,
-            subject: subject,
-            html: html
-        });
-    },
 
     reObj (origin,param){
         let temp = {}
