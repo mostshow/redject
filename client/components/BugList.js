@@ -36,7 +36,6 @@ class BugList extends React.Component {
             col:logData.col,
             sourceMapSrc:logData.sourceFile + '.map'
         }).then((res) => {
-        console.log(res)
             if (res.status == 200 && res.data) {
                 if (res.data.code == 0) {
                     var str = '文件名: ' + res.data.result.source + '\n';
