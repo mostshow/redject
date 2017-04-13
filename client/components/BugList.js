@@ -36,14 +36,15 @@ class BugList extends React.Component {
             col:logData.col,
             sourceMapSrc:logData.sourceFile + '.map'
         }).then((res) => {
+        console.log(res)
             if (res.status == 200 && res.data) {
-                if (res.data.rtn == 0) {
-                    var str = '文件名: ' + res.data.message.source + '\n';
-                    str += '行号: ' + res.data.message.line + '\n';
-                    str += '变量名: ' + res.data.message.name + '\n';
+                if (res.data.code == 0) {
+                    var str = '文件名: ' + res.data.result.source + '\n';
+                    str += '行号: ' + res.data.result.line + '\n';
+                    str += '变量名: ' + res.data.result.name + '\n';
                     alert(str);
                 } else {
-                    alert(res.data.message || 'request file error!');
+                    alert( 'request file error!');
                 }
             } else {
                 console.error(res);

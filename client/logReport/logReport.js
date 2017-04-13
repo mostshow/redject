@@ -75,6 +75,7 @@
         clientLogSendMax:50,
 
         init : function(config){
+            if(typeof config != 'object') return;
             this.config = {
                 url: 'http://10.16.8.5:3006/api/report/log',
                 sampling: 1,
