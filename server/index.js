@@ -13,7 +13,6 @@ import mongokeeper  from './models/mongokeeper'
 import apiRouter from './routes/apiRouter'
 import config from './config'
 
-console.log(process.env.NODE_ENV)
 let compiler = ''
 let app = express();
 if(process.env.NODE_ENV == 'development'){

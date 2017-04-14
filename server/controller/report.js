@@ -1,5 +1,4 @@
 
-import bluebird from 'bluebird'
 import _ from 'lodash'
 import moment from 'moment'
 import request from 'request'

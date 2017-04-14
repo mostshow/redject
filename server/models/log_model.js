@@ -3,7 +3,6 @@
  */
 
 import mongoose from 'mongoose'
-import bluebird from 'bluebird'
 
 
 const Schema = mongoose.Schema;
